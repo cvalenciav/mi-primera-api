@@ -1,0 +1,23 @@
+# Starter pipeline - Reemplazado por Carlos
+trigger:
+- main  # Se ejecuta al hacer push a la rama main
+
+pool:
+  vmImage: 'ubuntu-latest'  # Máquina virtual con Linux
+
+steps:
+- task: NodeTool@0  # Instala Node.js
+  inputs:
+    versionSpec: '16.x'
+
+- script: npm install  # Instala dependencias
+  displayName: 'Instalar dependencias'
+
+- script: npm test  # Ejecuta pruebas (si las tienes)
+  displayName: 'Ejecutar pruebas'
+
+- script: |
+    npm install -g azure-cli  # Instala CLI de Azure
+    echo "##vso[task.setvariable variable=AZURE_APP_NAME]mi-api-$(Build.BuildId)"  # Nombre único
+  displayName: 'Preparar despliegue'
+  condition: succeeded()  # Solo si los pasos anteriores funcionaron
